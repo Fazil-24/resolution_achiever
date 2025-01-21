@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Do It - Ultimate Resolution Achiever</title>
+    <style>
+        /* CSS Styling - style.css */
+        html {
+    height: 120%; /* Make html fill the entire viewport height */
+    background: linear-gradient(to bottom, rgb(114, 111, 111), rgb(179, 176, 176)); /* Apply gradient to html */
+    background-repeat: no-repeat; 
+}
+
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Background Gradient */
+    
+    
+    color: #333; /* Black text */
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #f0eaea; /* Black text */
+    text-align: center; /* Center the title */
+}
+
+h2, h3 {
+    color: #333; /* Black text */
+}
+
+.tagline {
+    font-style: italic;
+    color: #ece5e5; /* Black text */
+    text-align: center; /* Center the tagline */
+    margin-bottom: 30px; /* Add space below tagline */
+}
+
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.category {
+    background-color: #fff; /* White background for cards */
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid mediumseagreen; 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    /* Add space between cards */
+    margin-left: 10px; 
+    margin-right: 10px;
+}
+
+/* No need for random colors, keeping it consistent */
+/* .category h3 {
+    color: white; 
+    margin-bottom: 10px;
+} */
+
+.resolution-btn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.resolution-btn:hover {
+    background-color: #45a049;
+}
+
+/* Style the active resolution button */
+.resolution-btn.active {
+    background-color: #3e8e41;
+}
+
+.time-input {
+    margin-top: 20px;
+}
+
+.time-input label {
+    display: block;
+    margin-bottom: 5px;
+    color: #000000; /* Black text */
+}
+
+.time-input input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px #008CBA;
+}
+
+.generate-plan-btn {
+    background-color: #008CBA; /* Blue */
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.generate-plan-btn:hover {
+    background-color: #0077b3;
+}
+
+.plan-output {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border: 2px solid #0077b3;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.motivational-quote {
+    background-color: #f0f0f0;
+    border-left: 5px solid #008CBA;
+    padding: 10px;
+    margin-top: 20px;
+    font-style: italic;
+    color: #333; /* Black text */
+}
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Let's Do It - Ultimate Resolution Achiever</h1> 
+        <p class="tagline">Turn goals into actionable plans!</p>
+
+        <h2>Choose a Resolution:</h2>
+        <div class="category-container" id="resolutionCategories">
+            </div>
+
+        <div id="timeInputSection" style="display: none;">
+            <h2>Allocate Time:</h2>
+            <div class="time-input">
+                <label for="totalDuration">Total Duration (Days):</label>
+                <input type="number" id="totalDuration" name="totalDuration" min="1" required>
+            </div>
+            <button class="generate-plan-btn" onclick="generatePlan()">Generate Plan</button>
+        </div>
+
+        <div id="planOutput" class="plan-output" style="display: none;">
+            <h2>Your Personalized Plan:</h2>
+            <p id="generatedPlan"></p>
+        </div>
+    </div>
+
+<script>
+        // JavaScript Logic - script.js
+
+const resolutions = {
+    fitness: [
+        { text: "Run 5 km", quote: "The only bad workout is the one that didn't happen.", planFunction: generateRunningPlan }, 
+        { text: "Lose 5 kg", quote: "Healthy is an outfit that looks different on everybody.", planFunction: generateWeightLossPlan },
+        { text: "Do yoga for 30 days", quote: "Yoga is the journey of the self, through the self, to the self.", planFunction: generateYogaPlan } 
+    ],
+    learning: [
+        { text: "Learn Python", quote: "The joy of coding Python...", pagesPerBook: null, planFunction: generateLearningPlan },
+        { text: "Read 10 books", quote: "The more that you read...", pagesPerBook: 250, planFunction: generateReadingPlan },
+        { text: "Learn a new language", quote: "One language sets...", pagesPerBook: null, planFunction: generateLearningPlan }
+    ],
+    hobbies: [
+        { text: "Write a short story", quote: "The first draft is just you telling yourself the story.", planFunction: generateStoryPlan },
+        { text: "Paint a picture", quote: "Every child is an artist...", planFunction: generatePaintingPlan },
+        { text: "Play a song on guitar", quote: "Music is the universal language of mankind.", planFunction: generateGuitarPlan }
+    ]
+};
+
+// Function to populate resolution categories dynamically
+function loadResolutionCategories() {
+    const categoryContainer = document.getElementById('resolutionCategories');
+
+    for (const category in resolutions) {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.classList.add('category');
+        // categoryDiv.style.backgroundColor = getRandomColor(); // Set a random background color - Not needed
+
+        const categoryTitle = document.createElement('h3');
+        categoryTitle.textContent = category.toUpperCase();
+        categoryDiv.appendChild(categoryTitle);
+
+        const resolutionsArray = resolutions[category];
+        resolutionsArray.forEach(resolution => {
+            const resolutionButton = document.createElement('button');
+            resolutionButton.classList.add('resolution-btn');
+            resolutionButton.textContent = resolution.text;
+            resolutionButton.addEventListener('click', () => selectResolution(resolution)); // Pass the resolution object
+            categoryDiv.appendChild(resolutionButton);
+        });
+
+        categoryContainer.appendChild(categoryDiv);
+    }
+}
+
+// Function to handle resolution selection
+let selectedResolution = null;
+function selectResolution(resolution) {
+    selectedResolution = resolution;
+
+    // Remove 'active' class from all buttons
+    const resolutionButtons = document.querySelectorAll('.resolution-btn');
+    resolutionButtons.forEach(button => button.classList.remove('active'));
+
+    // Add 'active' class to the clicked button
+    event.target.classList.add('active');
+
+    // Show the time input section
+    document.getElementById('timeInputSection').style.display = 'block';
+}
+
+function generateRunningPlan(hoursPerDay, totalDays) {
+    const kmPerHour = 5; // Assuming an average running pace
+    const totalKm = Math.round(hoursPerDay * kmPerHour * totalDays); 
+    
+    let planText = "Running is a great way to stay fit. ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) of running per day, you'll cover around ${kmPerHour * hoursPerDay} km. `;
+    } else {
+        planText += `Even with ${hoursPerDay * 60} minutes a day, you can still make progress. `;
+    }
+
+    planText += `In ${totalDays} days, you could potentially run ${totalKm} km! That's impressive!`; 
+
+    return planText;
+}
+
+function generateWeightLossPlan(hoursPerDay, totalDays) {
+    // This is a simplified calculation, you may want to use a more accurate formula
+    let planText = "Losing weight is a journey, not a race. ";
+
+    if (hoursPerDay >= 1) {
+        planText += `Dedicate ${hoursPerDay} hour(s) to exercise and healthy eating. `;
+    } else {
+        planText += `Even ${hoursPerDay * 60} minutes of mindful eating and activity can make a difference. `;
+    }
+
+    planText += `Remember, consistency is key for sustainable weight loss. Good luck!`;
+
+    return planText;
+}
+
+function generateYogaPlan(hoursPerDay, totalDays) {
+    let planText = "Yoga is a great way to improve flexibility and find inner peace. ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) per day, explore different yoga styles and find what you enjoy. `;
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes each day can bring calmness and flexibility. `;
+    }
+
+    planText += `Enjoy your practice!`; 
+    return planText;
+}
+
+function generateReadingPlan(hoursPerDay, totalDays) {
+    const pagesPerHour = 30; // Assuming an average reading speed
+    const totalPages = Math.round(hoursPerDay * pagesPerHour * totalDays);
+    const booksCompleted = Math.floor(totalPages / selectedResolution.pagesPerBook); 
+    
+    let planText = "Reading books are excellent to grow your knowledge. ";
+
+    if (hoursPerDay >= 1) {
+        planText += `Since you can dedicate ${hoursPerDay} hour(s) per day, you can cover around ${hoursPerDay * pagesPerHour} pages. `;
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes per day can help you cover a significant amount. `;
+    }
+
+    if (booksCompleted > 0) {
+        planText += `In ${totalDays} days, you could complete ${booksCompleted} book(s). That's almost ${Math.round(booksCompleted / 12 * 10) / 10} books per month!`;
+    } else {
+        planText += `Keep up this pace, and you'll finish your first book in no time!`; 
+    }
+
+    return planText;
+}
+
+function generateLearningPlan(hoursPerDay, totalDays) {
+    let planText = "Learning something new is great! ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) per day, you can make significant progress. `;
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes each day can lead to improvement. `;
+    }
+
+    planText += `Try breaking down your learning into smaller, manageable chunks. Consistency is key!`;
+
+    return planText; 
+}
+
+
+
+function generateStoryPlan(hoursPerDay, totalDays) {
+    let planText = "Writing a short story is a creative and fulfilling endeavor. ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) per day, you can craft characters, develop plotlines, and write captivating scenes. `;
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes each day to brainstorming and writing can lead to a compelling story. `;
+    }
+    planText += "Let your imagination run wild!";
+    return planText;
+}
+
+function generatePaintingPlan(hoursPerDay, totalDays) {
+    let planText = "Painting is a wonderful way to express yourself creatively! ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) per day, you can experiment with different painting techniques and styles. `; 
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes to sketching and painting can help you develop your skills. `; 
+    }
+
+    planText += "Don't be afraid to make mistakes and let your creativity flow!";
+    return planText;
+}
+
+function generateGuitarPlan(hoursPerDay, totalDays) {
+    let planText = "Learning to play guitar is a fantastic goal! ";
+
+    if (hoursPerDay >= 1) {
+        planText += `With ${hoursPerDay} hour(s) of practice per day, you'll make significant progress in no time. `;
+    } else {
+        planText += `Even dedicating ${hoursPerDay * 60} minutes each day can help you master chords and strumming patterns. `;
+    }
+    planText += `Keep practicing consistently, and you'll be playing your favorite songs before you know it!`;
+    return planText; 
+}
+
+
+// Function to generate a personalized plan
+function generatePlan() {
+    if (selectedResolution) {
+        // Get time input (we'll change this to hours per day)
+        const hoursPerDay = parseFloat(prompt("How many hours per day can you dedicate to this goal?", "1")); // Default to 1 hour
+        const totalDays = parseInt(document.getElementById('totalDuration').value, 10); // Assuming duration is in days 
+
+        // ... Use selectedResolution.planFunction to generate the plan
+        let planText = '';
+        if (selectedResolution.planFunction) {
+            planText = selectedResolution.planFunction(hoursPerDay, totalDays);
+        } else {
+            planText = "Keep working towards your goal!"; // Default message
+        }
+
+        document.getElementById('generatedPlan').textContent = planText;
+        document.getElementById('planOutput').style.display = 'block';
+
+        // Display motivational quote
+        // ... (Implementation for motivational quote)
+    } else {
+        alert("Please select a resolution first!");
+    }
+}
+
+// Load resolution categories on page load
+loadResolutionCategories();
+
+    </script>
+</body>
+</html>
